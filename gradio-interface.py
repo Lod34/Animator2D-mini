@@ -81,18 +81,26 @@ def generate_sprite(description, num_frames, action, direction):
 # --------------------------------------------------
 # Creazione dell'interfaccia Gradio
 # --------------------------------------------------
-iface = gr.Interface(
-    fn=generate_sprite,
-    inputs=[
-        gr.Textbox(label="Character Description", value="A brave knight"),
-        gr.Number(label="Number of Animation Frames", value=1),
-        gr.Textbox(label="Character Action", value="sword attack"),
-        gr.Textbox(label="Viewing Direction", value="side")
-    ],
-    outputs=gr.Image(label="Animated Sprite"),
-    title="Sprite Generator",
-    description="Genera uno sprite animato a partire da una descrizione, numero di frame, azione e direzione di visualizzazione."
-)
+with gr.Blocks() as demo:
+    gr.Markdown("# Sprite Generator")
+    gr.Markdown("Generate animated sprites from text descriptions")
+    
+    with gr.Row():
+        with gr.Column():
+            description = gr.Text(label="Character Description", value="pixel art character")
+            frames = gr.Number(label="Number of Animation Frames", value=1, minimum=1)
+            action = gr.Text(label="Character Action", value="idle")
+            direction = gr.Text(label="Viewing Direction", value="front")
+            generate_btn = gr.Button("Generate Sprite")
+        
+        with gr.Column():
+            output_image = gr.Image(label="Generated Sprite", type="pil")
+    
+    generate_btn.click(
+        fn=generate_sprite,
+        inputs=[description, frames, action, direction],
+        outputs=output_image
+    )
 
-# Avvia l'interfaccia web
-iface.launch()
+if __name__ == "__main__":
+    demo.launch(show_api=False)
